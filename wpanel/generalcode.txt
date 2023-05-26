@@ -1,0 +1,142 @@
+// ** eğer php artisan migrate komutunda tablolar database de oluşturulamıyorsa config/database.php dosyasından 
+            'charset' => 'utf8',
+            'collation' => 'utf8_general_ci',
+// bununla değiştir. birde   $table->string('email')->unique();   unique kodunu eklemek gerekebilir.
+
+php artisan serve // projeyi çalıştırır.
+php artisan make:seeder dosyaismi   // database/seeds klasörü altında bir php dosyası açar. Veri tabanı tablosuna kayıt girmek için kulllanılır.
+php artisan make:migration create_tabloadı_table // veri tabanı için bir tablo oluşturur.tablo adının sonuna s yani çoğul olarak yaz
+php artisan migrate // tüm tabloları veri tabanına yazar
+php artisan db:seed --class=SettingTableSeeder <- burada dosya adı olacak //tabloya verileri yazar.
+php artisan migrate:fresh // tüm tabloları kaldırır ve tekrar yazar 
+php artisan config:cache // cache temizleme
+php artisan make:controller admin/defaultController yada dosya ismi // contorller dosyası oluşturur.
+php artisan make:model settings <- istediğimiz dosya ismi // model oluturur app klasörünün içinde görünür
+php artisan make:middleware loginAuth <-- buraya herhangi bir isim -- arakatman -- kullanıcı girişi yapılmışmı sayfalarda kontrolü  
+php artisan make:controller admin/defaultController <-(dosya ismi) --resource   // contorller dosyası oluştururken router ları basit bir şekilde yazmayı sağlıyor
+
+php artisan make:model bas_harfi-büyük_bir_isim_yaz -m // model ile beraber migrationda oluşturu.yani tablo oluşturur. 3. satırdaki kodu bir daha yazmana gerek kalmaz.
+**************************************************************************************
+//authendication kurulumu 7.x sürümü için
+1- composer require laravel/ui:^2.4
+2- php artisan ui vue --auth
+-------------COMPOSER Update yapma-------------
+composer global self-update --2
+composer self-update --2
+composer global update
+composer self-update --2 -vvv
+composer self-update -vvv
+composer -V
+
+**************************************************************************************
+Route::namespace('panel')->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::resource('blog', [blogController::class]);
+    });
+});
+
+**************************************************************************************
+
+DB::table('users')->where('name', 'John')->first(); // İlk Satırı Verir
+DB::table('users')->orderBy('name', 'desc')->get(); // İsme Göre ters sıralama yapar.
+DB::table('users')->inRandomOrder()->get(); // Rastgele bir sıralama yapar.
+DB::table('users')->groupBy('account_id')->get(); // Account ID Satırını Gruplar.
+DB::table('users')->select('name')->get(); // Sadece name kolonunu çeker.
+DB::table('users')->pluck('name'); // Name kolonunu dizi olarak bize verir.
+DB::table('users')->count(); // Kaç kullanıcı var sayar.
+DB::table('users')->avg('age') // Ortalamasını verir.
+DB::table('orders')->sum('price'); // Tüm hepsini toplar.
+DB::table('orders')->max('price'); // Max değeri gösterir.
+DB::table('orders')->min('price'); // Min değeri gösterir.
+DB::table('users')->where('id',3)->get(); // Normalde bu kısa kullanımı bunun açılımı where('id','=',3)
+DB::table('users')->where('id','<',3)->get(); // Verdiğimiz Sayıdan küçükleri çeker.
+DB::table('users')->where('id','>',3)->get(); // Verdiğimiz Sayıdan büyükleri çeker.
+DB::table('users')->whereIn('id',[1,2,3])->get(); // Dizi içerisinde verdiğimiz değerleri çeker.
+DB::table('users')->whereNotIn('id',[1,2,3])->get(); // Dizi içerisinde verdiğimiz değerleri olmayanları çeker.
+DB::table('users')->whereBetween('id',[1,3])->get(); // Dizi içerisinde belirtiğimiz sayı aralığında veri çeker.
+DB::table('users')->whereNotBetween('id',[1,3])->get(); // Dizi içerisinde belirtiğimiz sayı dışındaki verileri çeker.
+DB::table('users')->whereNull('created_ad')->get(); // Belirttiğimiz kolondaki boş değerleri çeker.
+DB::table('users')->whereNotNull('created_ad')->get(); // Belirttiğimiz kolondaki boş olmayan değerleri çeker.
+DB::table('users')->where(["urun_adi","Monitör"],["seri_no",333])->get(); // Bu şekilde bir çok kolonda karşılaştırma yaparak veri çekebiliriz.
+DB::table('users')->whereSerino(1)->get(); // where'in yanına ilgili kolonu CamelCase olarak yazarak ilgili kolondan değer çekebiliriz.
+// İlişkiler
+User::has('post')->get(); //Sadece Yazısı olan kullanıcıları getir.
+User::has('post','>',3)->get(); //3'den fazla yazısı olan kullanıcıları getir.
+User::withCount(['post','product'])->get(); //Kullanıcıların yazı ve ürün sayılarını getirir.
+//İlişkiler sonuna () tamlamasını eklediğimizde üst kısımdaki tüm methodları kullanabiliriz.
+User::find(1)->posts()->where('name','like','Kahramaner%')->get();
+
+**************************************************************************************
+**ÖZET** Laravel projeyi sunucuya yükleme
+************ Mutlaka bootstrap/cache/config.php dosyasını tamamen siiiilllllllll (sunucuya yükleme işlemi bittikten sorna)
+1- Php sürümünüz 7.13 altında ise Cpanel üzerinden php sürümünüzü 7.13 ve ya üzerine yükseltin
+2-Hosting’inizin bulunduğu anadizinde(public_html değil!) bir proje klasörü oluşturun. LavProje vb gibi. “public” dosyası hariç tüm dosya ve klasörleri bu dizin altına kopyalayın.
+3- Laravel proje klasörünüzdeki “public” dizini altında bulunan tüm içerikleri, hostinginizde bulunan “public_html” dosyanızı taşıyın. Burada bulunan kodları klasör yapınıza uygun düzenlemeniz gerekiyor.
+require __DIR__.’/../LavProje/vendor/autoload.php’;
+$app = require_once __DIR__.’/../LavProje/bootstrap/app.php’;
+4-Cpanel’den veritabanı ve kullanıcı oluşturun, mevcut veritabanınızı hostingde bulunan veritabanı ile eşleyin.
+5- .env dosyanızı düzenleme modunda açın, veritabanı ayarlarınız yapın.
+6- Proje dosyanızda bulunan storage adlı dosyanın bağlantısını yapmak için symlink.php adlı bir php dosyası oluşturun ve içerisine aşağıdaki kodu kendi dizininize uygun bir şekilde düzenleyip yazın.
+<?php
+symlink(‘/home/LavProje/storage/app/public’, ‘/home/LavProje/public_html/storage’);
+?>
+7- http://www.siteadiniz.com/symlink.php şeklide bir sorgu gönderin ve storage bağlantısını tamamladığınızdan emin olduktan sonra symlink.php adlı dosyayı dizinden silin.
+
+
+*****************************************************************************************
+/api işlemleri için 
+composer require laravel/passport //kullanıcı authendication ilemleri için paket
+php artisan migrate
+php artisan passport:install
+//Dokuman sayfasından devam et
+**************************************************************************************
+//laravel kur
+composer create-project --prefer-dist laravel/laravel:^8.x proje-adı
+composer create-project --prefer-dist laravel/laravel proje_adi
+
+*************************************************************************
+//Composer Güncelleme
+
+composer dump-autoload
+satıcı klasörü eklemek için.
+
+sonra bu komutu çalıştırın
+
+composer update --no-scripts
+besteci güncellemek için.
+
+**************// Resize Image********************************************************** http://image.intervention.io/ herşey burada
+composer require intervention/image
+//config/app.php klasörüne aşağıdakileri yerleştir.
+Intervention\Image\ImageServiceProvider::class  //In the $providers array add the service providers for this package.
+'Image' => Intervention\Image\Facades\Image::class //Add the facade of this package to the $aliases array.
+php artisan vendor:publish --provider="Intervention\Image\ImageServiceProviderLaravelRecent"   //çalıştır terminalden
+
+            $fileName = uniqid() . "." . $request->file->getClientOriginalExtension();
+            $image_resize = Image::make($request->file->getRealPath());
+            // $image_resize->resize(300, 300);
+            $image_resize->resize(1920, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image_resize->save(public_path('images/blog/' . $fileName));
+            //$image_resize->save(public_path('images/blog/' . $fileName),80); //buda resim kalitesi için 80 mesela
+********************************************************************************************
+//Cache temizleme
+composer cc
+php artisan cache:clear
+php artisan config:clear
+
+--------------------
+Seeder dosyasına yazırma hatası Reflector........
+composer dump-autoload
+**********************************************************************************
+
+///////Updating Dependencies
+/////Update the following dependencies in your composer.json file:
+
+guzzlehttp/guzzle to ^7.0.1
+facade/ignition to ^2.3.6
+laravel/framework to ^8.0
+laravel/ui to ^3.0
+nunomaduro/collision to ^5.0
+phpunit/phpunit to ^9.0

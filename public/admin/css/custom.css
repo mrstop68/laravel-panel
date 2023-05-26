@@ -1,0 +1,11 @@
+.alertify-notifier.ajs-bottom {
+    top: 30px;
+    bottom: auto;
+}
+.sortable {
+    cursor: -webkit-grab;
+    cursor: grab;
+}
+.card-body strong {
+    text-transform: uppercase;
+}

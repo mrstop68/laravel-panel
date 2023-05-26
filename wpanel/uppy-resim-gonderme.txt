@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Uppy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://releases.transloadit.com/uppy/v2.1.0/uppy.min.css" rel="stylesheet">
+    {{-- <link rel="stylesheet" href="style.css"> --}}
+  </head>
+  <style>
+    /* @media screen and (max-width: 760px) {
+      .uppy-size--md .uppy-Dashboard-AddFiles-title {
+    font-size: 36px !important;
+  }
+} */
+  </style>
+  <body>
+    <!-- <div id="drag-drop-area"></div> -->
+    <form action="{{route('gallery.corparate')}}" method="POST" enctype="multipart/form-data">
+      <div id="drag-drop-area"></div>
+    </form> 
+    {{-- <form action="{{route('gallery.corparate')}}" method="POST" >
+        @csrf
+    <input type="file" name="images[]" multiple>
+    <button type="submit">kaydet</button>
+    </form> --}}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://releases.transloadit.com/uppy/v2.1.0/uppy.min.js"></script>
+    {{-- <script src="script.js"></script> --}}
+    <script>
+      var uppy = new Uppy.Core()
+        .use(Uppy.Dashboard, {
+          inline: true,
+          target: '#drag-drop-area'
+        })
+        .use(Uppy.Tus, {endpoint: '/images/gallery'})
+
+      uppy.on('complete', (result) => {
+        console.log('Upload complete! We’ve uploaded these files:', result.successful)
+      })
+    </script>
+  </body>
+</html>

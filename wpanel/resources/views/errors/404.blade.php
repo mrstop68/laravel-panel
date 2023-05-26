@@ -1,0 +1,1 @@
+Burası 404 sayfasıdır
